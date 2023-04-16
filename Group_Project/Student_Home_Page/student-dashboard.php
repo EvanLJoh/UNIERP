@@ -1,0 +1,135 @@
+<?php
+require_once 'session_helper.php';
+
+if (!check_session()) {
+  header('Location: student-login.html');
+  exit();
+} else {
+  // Continue with the script
+}
+
+$servername = "localhost";
+$username = "root";
+$password = "root";
+$dbname = "UNIERPv3";
+
+
+
+
+
+
+
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// Replace the value with the actual student ID.
+$student_id = $_SESSION['student_id'];
+
+
+// Fetch student information
+$student_sql = "SELECT s.*, m.major_name, hp.program_name FROM students s 
+                LEFT JOIN majors m ON s.major_id = m.major_id 
+                LEFT JOIN honors_programs hp ON s.honors_program_id = hp.program_id 
+                WHERE s.student_id = $student_id";
+$student_result = $conn->query($student_sql);
+$student = $student_result->fetch_assoc();
+
+// Fetch current semester registration
+$registration_sql = "SELECT c.course_code, c.course_name, p.first_name, p.last_name, sec.start_time, sec.end_time, sec.room_number, sec.section_number 
+                     FROM student_current_semester_registration sr 
+                     JOIN sections sec ON sr.section_id = sec.section_id 
+                     JOIN courses c ON sec.course_id = c.course_id 
+                     JOIN professors p ON sec.professor_id = p.professor_id 
+                     WHERE sr.student_id = $student_id";
+$registration_result = $conn->query($registration_sql);
+
+// Close connection
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1 class="my-4">Student Dashboard</h1>
+    
+    <h2>Personal Information</h2>
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th>Name</th>
+          <td><?php echo $student["first_name"] . " " . $student["last_name"]; ?></td>
+        </tr>
+        <tr>
+          <th>Email</th>
+          <td><?php echo $student["email"]; ?></td>
+        </tr>
+        <tr>
+          <th>Major</th>
+          <td><?php echo $student["major_name"]; ?></td>
+        </tr>
+        <tr>
+          <th>Honors Program</th>
+          <td><?php echo $student["program_name"] ? $student["program_name"] : "Not Enrolled"; ?></td>
+        </tr>
+        <tr>
+          <th>GPA</th>
+          <td><?php echo $student["gpa"]; ?></td>
+        </tr>
+        <tr>
+          <th>Credits Taken</th>
+          <td><?php echo $student["credits_taken"]; ?></td>
+        </tr>
+        <tr>
+          <th>Classification</th>
+          <td><?php echo $student["classification"]; ?></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Current Semester Registration</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Course Code</th>
+          <th>Course Name</th>
+          <th>Professor</th>
+          <th>Section Number</th>
+          <th>Schedule</th>
+          <th>Room Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php while ($row = $registration_result->fetch_assoc()): ?>
+        <tr>
+          <td><?php echo $row["course_code"]; ?></td>
+          <td><?php echo $row["course_name"]; ?></td>
+          <td><?php echo $row["first_name"] . " " . $row["last_name"]; ?></td>
+          <td><?php echo $row["section_number"]; ?></td>
+          <td><?php echo date("g:i A", strtotime($row["start_time"])) . " - " . date("g:i A", strtotime($row["end_time"])); ?></td>
+          <td><?php echo $row["room_number"]; ?></td>
+        </tr>
+        <?php endwhile; ?>
+      </tbody>
+    </table>
+
+    <div class="my-3">
+      <a href="student_transcript.php" class="btn btn-primary">View Transcript</a>
+      <a href="student-home.php" class="btn btn-secondary">Back to Home</a>
+    </div>
+  </div>
+</body>
+</html>
+

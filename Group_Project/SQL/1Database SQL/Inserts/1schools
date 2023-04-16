@@ -1,0 +1,225 @@
+import random
+
+# Schools
+schools = []
+for i in range(20):
+    schools.append(f"School {i + 1}")
+print(schools)
+
+# Honors Programs
+honors_programs = []
+for i in range(20):
+    honors_programs.append(f"Honors Program {i + 1}")
+print(honors_programs)
+
+# Majors
+majors = []
+for i in range(60):
+    majors.append(f"Major {i + 1}")
+print(majors)
+
+# Courses
+courses = []
+for i in range(900):
+    course_name = f"Course {i + 1}"
+    course_description = f"Description for Course {i + 1}"
+    credits = random.randint(1, 4)
+    course_quota = random.randint(10, 50)
+    major_only = random.choice([0, 1])
+    honors_only = random.choice([0, 1])
+    courses.append((course_name, course_description, credits, course_quota, major_only, honors_only))
+print(courses)
+
+# Course Prerequisites
+course_prerequisites = []
+for i in range(900):
+    if i == 0:
+        continue
+    course_id = i + 1
+    prerequisite_id = random.randint(1, i)
+    course_prerequisites.append((course_id, prerequisite_id))
+print(course_prerequisites)
+
+# Major Requirements
+major_requirements = []
+for i in range(60):
+    major_id = i + 1
+    for j in range(random.randint(5, 15)):
+        course_id = random.randint(1, 900)
+        major_requirements.append((major_id, course_id))
+print(major_requirements)
+
+# Minors
+minors = []
+for i in range(20):
+    minors.append(f"Minor {i + 1}")
+print(minors)
+
+# Minor Requirements
+minor_requirements = []
+for i in range(20):
+    minor_id = i + 1
+    for j in range(random.randint(3, 7)):
+        course_id = random.randint(1, 900)
+        minor_requirements.append((minor_id, course_id))
+print(minor_requirements)
+
+# Concentrations
+concentrations = []
+for i in range(20):
+    concentrations.append(f"Concentration {i + 1}")
+print(concentrations)
+
+# Concentration Requirements
+concentration_requirements = []
+for i in range(20):
+    concentration_id = i + 1
+    for j in range(random.randint(2, 5)):
+        course_id = random.randint(1, 900)
+        concentration_requirements.append((concentration_id, course_id))
+print(concentration_requirements)
+
+# Honors Program Requirements
+honors_program_requirements = []
+for i in range(20):
+    program_id = i + 1
+    for j in range(random.randint(2, 5)):
+        course_id = random.randint(1, 900)
+        honors_program_requirements.append((program_id, course_id))
+print(honors_program_requirements)
+
+# Students
+students = []
+for i in range(1, 2001):
+    first_name = f"First Name {i}"
+    last_name = f"Last Name {i}"
+    email = f"email{i}@example.com"
+    major_id = random.randint(1, 60)
+    honors_program_id = random.choice([0] * 8 + list(range(1, 21)))
+    transfer = random.choice([0, 1])
+    gpa = round(random.uniform(2.0, 4.0), 2)
+    credits_taken = random.randint(0, 120)
+    if credits_taken >= 90:
+        classification = "Senior"
+    elif credits_taken >= 60:
+        classification = "Junior"
+    elif credits_taken >= 30:
+        classification = "Sophomore"
+    else:
+        classification = "Freshman"
+    students.append((first_name, last_name, email, major_id, honors_program_id, transfer, gpa, credits_taken, classification))
+print(students)
+
+#Professors
+professors = []
+for i in range(1, 301):
+    first_name = f"First Name {i}"
+    last_name = f"Last Name {i}"
+    email = f"email{i}@example.com"
+    professors.append((first_name, last_name, email))
+print(professors)
+
+#Admins
+admins = [("Admin", "Admin", "admin@example.com")]
+
+
+#Admins
+admins = [("Admin", "Admin", "admin@example.com")]
+
+#Sections
+# Sections
+sections = []
+for i in range(400):
+    course_id = random.randint(1, 900)
+    professor_id = random.randint(1, 300)
+    semester = random.choice(["Fall", "Spring", "Summer"])
+    year = random.randint(2020, 2023)
+    section_number = i + 1
+    start_time = f"{random.randint(8, 12)}:00:00"
+    end_time = f"{random.randint(13, 17)}:00:00"
+    room_number = f"Room {random.randint(1, 100)}"
+    major_only = random.choice([0, 1])
+    honors_only = random.choice([0, 1])
+    sections.append((course_id, professor_id, semester, year, section_number, start_time, end_time, room_number, major_only, honors_only))
+print(sections)
+
+
+#Student Current Semester Registration
+student_current_semester_registration = []
+for student in students:
+    student_id = students.index(student) + 1
+for i in range(random.randint(3, 5)):
+    course_id = random.randint(1, 900)
+section_id = random.randint(1, 400)
+semester_credits = random.randint(1, 4)
+grade = random.choice([None] * 4 + ["A", "B", "C", "D", "F"])
+student_current_semester_registration.append((student_id, section_id, semester_credits, grade))
+print(student_current_semester_registration)
+
+#Student Minors
+student_minors = []
+for student in students:
+    student_id = students.index(student) + 1
+minor_id = random.randint(1, 20)
+student_minors.append((student_id, minor_id))
+print(student_minors)
+
+#Student Concentrations
+student_concentrations = []
+for student in students:
+    student_id = students.index(student) + 1
+concentration_id = random.randint(1, 20)
+student_concentrations.append((student_id, concentration_id))
+print(student_concentrations)
+
+# Student Transcript
+student_transcript = []
+for student in students:
+    student_id = students.index(student) + 1
+    section_id = None
+    for registration in student_current_semester_registration:
+        if registration[0] == student_id:
+            section_id = registration[1]
+    if section_id is not None:
+        course_id = sections[section_id - 1][0]
+        grade = registration[3]
+        if grade:
+            student_transcript.append((student_id, course_id, grade))
+    for minor in student_minors:
+        if minor[0] == student_id:
+            minor_id = minor[1]
+            for req in minor_requirements:
+                if req[0] == minor_id:
+                    course_id = req[1]
+                    grade = random.choice(["A", "B", "C", "D", "F"])
+                    student_transcript.append((student_id, course_id, grade))
+    for concentration in student_concentrations:
+        if concentration[0] == student_id:
+            concentration_id = concentration[1]
+            for req in concentration_requirements:
+                if req[0] == concentration_id:
+                    course_id = req[1]
+                    grade = random.choice(["A", "B", "C", "D", "F"])
+                    student_transcript.append((student_id, course_id, grade))
+
+# Save output to a text file
+with open('/Applications/XAMPP/xamppfiles/htdocs/SAD ASSIGMENTS/Group Project/SQL/1Database SQL/Inserts/outputv2.txt', 'w') as file:
+    file.write(f'Schools: {schools}\n')
+    file.write(f'Honors Programs: {honors_programs}\n')
+    file.write(f'Majors: {majors}\n')
+    file.write(f'Courses: {courses}\n')
+    file.write(f'Course Prerequisites: {course_prerequisites}\n')
+    file.write(f'Major Requirements: {major_requirements}\n')
+    file.write(f'Minors: {minors}\n')
+    file.write(f'Minor Requirements: {minor_requirements}\n')
+    file.write(f'Concentrations: {concentrations}\n')
+    file.write(f'Concentration Requirements: {concentration_requirements}\n')
+    file.write(f'Honors Program Requirements: {honors_program_requirements}\n')
+    file.write(f'Students: {students}\n')
+    file.write(f'Professors: {professors}\n')
+    file.write(f'Admins: {admins}\n')
+    file.write(f'Sections: {sections}\n')
+    file.write(f'Student Current Semester Registration: {student_current_semester_registration}\n')
+    file.write(f'Student Minors: {student_minors}\n')
+    file.write(f'Student Concentrations: {student_concentrations}\n')
+    file.write(f'Student Transcript: {student_transcript}\n')

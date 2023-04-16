@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Login</title>
+  <link rel="stylesheet" type="text/css" href="student-login.css">
+  <style>
+    body {
+      background-color: #f8f8f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="heading">Student Login</h1>
+    <form class="login-form" action="student-login.php" method="post">
+      <input type="text" class="input-field" name="student-id" placeholder="Student ID" required>
+      <input type="password" class="input-field" name="registration-pin" placeholder="Registration Pin" required>
+      <button type="submit" class="submit-btn" name="login">Login</button>
+      <a href="loginportal.html" class="back-btn">Back</a>
+    </form>    
+  </div>
+</body>
+</html>

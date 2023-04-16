@@ -1,0 +1,55 @@
+import random
+from faker import Faker
+import pandas as pd
+from faker.exceptions import UniquenessException
+
+fake = Faker()
+
+def generate_course_name():
+    return f"{fake.bs().title()} {fake.word().title()}"
+
+def generate_unique_course_code(attempts=5000):
+    for _ in range(attempts):
+        try:
+            return f'{fake.unique.lexify(text="???")} {fake.unique.random_number(digits=3, fix_len=True)}'
+        except UniquenessException:
+            pass
+    raise UniquenessException(f"Unable to generate unique course code after {attempts} attempts.")
+
+# Generate data for schools, majors, minors, concentrations, honors programs, courses, professors, and students
+num_schools = 20
+num_majors = 60
+num_courses = 900
+num_minors = 40
+num_concentrations = 20
+num_honors_programs = 20
+num_students = 2000
+num_professors = 300
+
+schools = [{'school_name': fake.unique.company()} for _ in range(num_schools)]
+majors = [{'major_name': fake.unique.job(), 'major_credits_required': 120, 'school_id': random.randint(1, num_schools)} for _ in range(num_majors)]
+minors = [{'minor_name': fake.unique.job()} for _ in range(num_minors)]
+concentrations = [{'concentration_name': fake.unique.job()} for _ in range(num_concentrations)]
+honors_programs = [{'program_name': f'{fake.unique.job()} Honors Program', 'school_id': random.randint(1, num_schools)} for _ in range(num_honors_programs)]
+
+# Generate unique course codes
+course_codes = set()
+while len(course_codes) < num_courses:
+    course_codes.add(generate_unique_course_code())
+
+courses = [{'course_code': code, 'course_name': generate_course_name(), 'credits': random.choice([3, 4])} for code in course_codes]
+students = [{'student_name': fake.name(), 'school_id': random.randint(1, num_schools)} for _ in range(num_students)]
+professors = [{'professor_name': fake.name(), 'school_id': random.randint(1, num_schools)} for _ in range(num_professors)]
+
+# Save data to an Excel file
+file_path = '/Applications/XAMPP/xamppfiles/htdocs/SAD ASSIGMENTS/Group Project/SQL/1Database SQL/Inserts/excel data/excel data 2.0/college_data.xlsx'
+with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+    pd.DataFrame(schools).to_excel(writer, sheet_name='Schools', index=False)
+    pd.DataFrame(majors).to_excel(writer, sheet_name='Majors', index=False)
+    pd.DataFrame(minors).to_excel(writer, sheet_name='Minors', index=False)
+    pd.DataFrame(concentrations).to_excel(writer, sheet_name='Concentrations', index=False)
+    pd.DataFrame(honors_programs).to_excel(writer, sheet_name='Honors_Programs', index=False)
+    pd.DataFrame(courses).to_excel(writer, sheet_name='Courses', index=False)
+    pd.DataFrame(students).to_excel(writer, sheet_name='Students', index=False)
+    pd.DataFrame(professors).to_excel(writer, sheet_name='Professors', index=False)
+
